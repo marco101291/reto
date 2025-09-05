@@ -6,10 +6,10 @@ import { PlusIcon, Trash } from 'lucide-react';
 
 import HomeTabs from '@/components/layout/HomeTabs';
 import { deleteForm, listForms } from '@/lib/forms/forms-store';
-import type { FormMeta } from '@/types/form';
+import type { FormMeta as FormMetaStore } from '@/lib/forms/forms-store';
 
 export default function FormsTabPage() {
-  const [items, setItems] = useState<FormMeta[]>([]);
+  const [items, setItems] = useState<FormMetaStore[]>([]);
   const [q, setQ] = useState('');
   useEffect(() => {
     setItems(listForms());
