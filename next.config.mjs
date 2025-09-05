@@ -77,22 +77,22 @@ const nextConfig = {
       },
       {
         source: '/dashboard',
-        destination: '/dashboard/home',
+        destination: '/dashboard/',
         permanent: false
       },
       {
-        source: '/dashboard/settings',
-        destination: '/dashboard/settings/account/profile',
+        source: '/app/settings',
+        destination: '/app/settings/account/profile',
         permanent: false
       },
       {
-        source: '/dashboard/settings/account',
-        destination: '/dashboard/settings/account/profile',
+        source: '/app/settings/account',
+        destination: '/app/settings/account/profile',
         permanent: false
       },
       {
-        source: '/dashboard/settings/organization',
-        destination: '/dashboard/settings/organization/information',
+        source: '/app/settings/organization',
+        destination: '/app/settings/organization/information',
         permanent: false
       }
     ];

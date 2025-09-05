@@ -5,16 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useAutosaveForm } from '@/hooks/useAutoSaveForm';
 import useFormBuilder from '@/hooks/useFormBuilder';
-import { upsertForm } from '@/lib/forms/forms-store';
 
 import FormEditor from './FormEditor';
 import FormPreview from './FormPreview';
 
 const FormBuilder: React.FC = () => {
-  const router = useRouter();
-  const search = useSearchParams();
-  const editingId = search.get('id') || undefined;
-
   const sp = useSearchParams();
   const id = sp.get('id') ?? 'new';
   const from = sp.get('from') as 'forms' | 'templates' | null;
@@ -29,10 +24,8 @@ const FormBuilder: React.FC = () => {
   );
 };
 
-// components/forms/FormBuilder.tsx
-
 type Props = {
-  editingId?: string; // ← llega desde la page
+  editingId?: string;
   from?: 'forms' | 'templates';
 };
 
@@ -40,7 +33,6 @@ const FormBuilderScreen: React.FC<Props> = ({ editingId, from }) => {
   const router = useRouter();
   const startAtCover = from === 'templates';
 
-  // ← pasa el id al hook; el hook debe rehidratar cuando cambie
   const {
     form,
     currentStep,
@@ -61,7 +53,7 @@ const FormBuilderScreen: React.FC<Props> = ({ editingId, from }) => {
     form,
     id: editingId,
     onFirstSave: (newId) => {
-      router.replace(`/dashboard/form-builder?id=${newId}`);
+      router.replace(`/app/form-builder?id=${newId}`);
     },
     delay: 700
   });
@@ -104,7 +96,7 @@ const FormBuilderScreen: React.FC<Props> = ({ editingId, from }) => {
         </div> */}
         <div className="flex items-center gap-3 border-b px-4 py-3">
           <a
-            href="/dashboard/home/forms"
+            href={`/app/${from === 'templates' ? 'templates' : 'forms'}`}
             className="text-sm text-muted-foreground hover:underline"
           >
             ← {`Back to ${from === 'templates' ? 'Templates' : 'My forms'}`}
