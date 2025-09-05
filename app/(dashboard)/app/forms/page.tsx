@@ -28,7 +28,7 @@ export default function FormsTabPage() {
       <div className="flex items-center justify-between">
         <HomeTabs />
         <Link
-          href="/dashboard/form-builder?from=forms"
+          href="/app/form-builder?from=forms"
           className="inline-flex items-center gap-1 rounded-md bg-[hsl(var(--active))] px-3 py-2 text-sm text-white shadow-sm hover:bg-[hsl(var(--active))]/90"
         >
           <PlusIcon className="w-5" />
@@ -59,7 +59,7 @@ export default function FormsTabPage() {
           Aún no tienes formularios. ¡Crea el primero! ✨
           <div className="mt-3">
             <Link
-              href="/dashboard/form-builder?from=forms"
+              href="/app/form-builder?from=forms"
               className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground shadow-sm hover:bg-primary/90"
             >
               Crear formulario
@@ -110,7 +110,7 @@ export default function FormsTabPage() {
               {/* Acciones (misma altura que "Editar") */}
               <div className="my-2 flex items-center justify-evenly gap-2 p-2">
                 <Link
-                  href={`/dashboard/form-builder?id=${m.id}&from=forms`}
+                  href={`/app/form-builder?id=${m.id}&from=forms`}
                   className="
                     rounded border border-input bg-background px-2 py-1 text-xs
                     hover:bg-accent hover:text-accent-foreground
@@ -154,7 +154,7 @@ export default function FormsTabPage() {
 
       {/* FAB móvil opcional */}
       <Link
-        href="/dashboard/form-builder?from=forms"
+        href="/app/form-builder?from=forms"
         className="fixed bottom-6 right-6 rounded-full bg-primary p-4 text-primary-foreground shadow-lg hover:bg-primary/90 sm:hidden"
         aria-label="Crear formulario"
       >

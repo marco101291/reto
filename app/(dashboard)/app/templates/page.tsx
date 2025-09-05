@@ -29,7 +29,7 @@ export default function TemplatesPage() {
       theme: tpl.theme,
       coverUrl: tpl.coverUrl
     });
-    router.push(`/dashboard/form-builder?id=${id}&from=templates`);
+    router.push(`/app/form-builder?id=${id}&from=templates`);
   };
 
   return (
@@ -50,7 +50,7 @@ export default function TemplatesPage() {
           Choose a template
         </h1>
         <Link
-          href="/dashboard/home/templates"
+          href="/app/templates"
           className="rounded text-xs text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           ← Back

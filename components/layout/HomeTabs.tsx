@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const TABS = [
-  { href: '/dashboard/home/forms', label: 'My forms', emoji: '🧰' },
-  { href: '/dashboard/home/templates', label: 'Templates', emoji: '🎨' }
+  { href: '/app/forms', label: 'My forms', emoji: '🧰' },
+  { href: '/app/templates', label: 'Templates', emoji: '🎨' }
 ];
 
 export default function HomeTabNav() {
