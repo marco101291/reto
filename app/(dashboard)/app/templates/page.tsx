@@ -49,12 +49,6 @@ export default function TemplatesPage() {
         <h1 className="text-sm font-semibold text-foreground">
           Choose a template
         </h1>
-        <Link
-          href="/app/templates"
-          className="rounded text-xs text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          ← Back
-        </Link>
       </div>
 
       <div className="grid justify-items-center gap-6 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
