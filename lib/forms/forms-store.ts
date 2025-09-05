@@ -30,11 +30,11 @@ function safeParse<T>(raw: string | null, fallback: T): T {
   }
 }
 
-function readDb<T = any>(): FormsDb<T> {
+function readDb<T = undefined>(): FormsDb<T> {
   if (!isBrowser()) return {} as FormsDb<T>;
   return safeParse<FormsDb<T>>(localStorage.getItem(FORMS_KEY), {});
 }
-function writeDb<T = any>(db: FormsDb<T>) {
+function writeDb<T = undefined>(db: FormsDb<T>) {
   if (!isBrowser()) return;
   localStorage.setItem(FORMS_KEY, JSON.stringify(db));
 }

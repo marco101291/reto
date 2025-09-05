@@ -95,14 +95,15 @@ export default function useFormBuilder(
    * Cambia el índice del paso actual.
    */
   const changeStep = useCallback(
-    (index: number) => {
-      if (index >= 0 && index < form.steps.length) {
-        setCurrentStep(index);
+    (value: number | ((prev: number) => number)) => {
+      const newIndex = typeof value === 'function' ? value(currentStep) : value;
+      if (newIndex >= 0 && newIndex < form.steps.length) {
+        setCurrentStep(newIndex);
       } else {
         setCurrentStep(-1);
       }
     },
-    [form.steps.length]
+    [form.steps.length, currentStep]
   );
 
   /**
@@ -147,22 +148,27 @@ export default function useFormBuilder(
       setForm((prev) => {
         const step = prev.steps[currentStep];
         if (!step) return prev;
+
         const kebabName = field.label
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, '-')
           .replace(/^-+|-+$/g, '');
-        const newField: FieldConfig = {
+
+        const newField = {
           ...field,
           id: generateId(),
           name: kebabName || generateId()
-        };
+        } as FieldConfig; // Type assertion aquí
+
         const updatedStep: FormStep = {
           ...step,
           fields: [...step.fields, newField]
         };
+
         const newSteps = prev.steps.map((s, idx) =>
           idx === currentStep ? updatedStep : s
         );
+
         const newForm = { ...prev, steps: newSteps } as FormConfig;
         setIsDirty(true);
         return newForm;
@@ -220,6 +226,8 @@ export default function useFormBuilder(
     try {
       localStorage.removeItem(DRAFT_KEY);
     } catch (_err) {
+      console.error(_err);
+
       return;
       // ignore
     }
