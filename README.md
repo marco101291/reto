@@ -95,8 +95,8 @@ Copy `.env.example` to `.env` and fill as needed. The template documents DB + op
    - Use **Templates** to start with theme + background cover automatically applied, or start from **My Forms**.
 2. **Edit fields**
    - Add/edit fields, including **multiple‑option** types; preview updates as you go.
-3. **Autosave & Reset**
-   - Changes are **autosaved**; use **Reset preview** to restore defaults during testing.
+3. **Autosave**
+   - Changes are **autosaved**.
 4. **Manage forms**
    - Open the **My Forms** tab to list, open, and **delete** forms.
 
