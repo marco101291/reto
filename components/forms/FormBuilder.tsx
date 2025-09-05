@@ -45,11 +45,7 @@ const FormBuilderScreen: React.FC<Props> = ({ editingId, from }) => {
     removeField
   } = useFormBuilder(editingId, { startAtCover });
 
-  const {
-    status,
-    lastSavedAt,
-    id: liveId
-  } = useAutosaveForm({
+  const { status, lastSavedAt } = useAutosaveForm({
     form,
     id: editingId,
     onFirstSave: (newId) => {
@@ -132,7 +128,7 @@ const FormBuilderScreen: React.FC<Props> = ({ editingId, from }) => {
         <FormPreview
           form={form}
           previewStep={currentStep}
-          setPreviewStep={changeStep} // ← viene del hook del editor
+          setPreviewStep={changeStep}
           previewMode={true}
           coverEnabled={true}
         />

@@ -28,30 +28,36 @@ function generateSchema(fields: FieldConfig[]) {
       const multiple = !!f.multiple;
 
       if (multiple) {
-        let v: any = z.array(z.string());
+        let v = z.array(z.string());
         if (field.required) v = v.min(1, 'Selecciona al menos una opción');
         if (typeof f.minSelected === 'number')
           v = v.min(f.minSelected, `Choose at least ${f.minSelected}`);
         if (typeof f.maxSelected === 'number')
           v = v.max(f.maxSelected, `Choose at most ${f.maxSelected}`);
         if (!f.allowCustom) {
-          v = v.refine(
-            (arr: string) => arr.every((val) => optionValues.includes(val)),
+          schemaShape[field.name] = v.refine(
+            (arr) => arr.every((val) => optionValues.includes(val)),
             {
               message: 'Una o más opciones no son válidas'
             }
           );
+        } else {
+          schemaShape[field.name] = v;
         }
-        schemaShape[field.name] = v;
       } else {
         let v = z.string();
         if (field.required) v = v.min(1, 'Required field');
+
         if (!f.allowCustom) {
-          v = v.refine((val) => optionValues.includes(val), {
-            message: 'Opción inválida'
-          });
+          schemaShape[field.name] = v.refine(
+            (val) => optionValues.includes(val),
+            {
+              message: 'Opción inválida'
+            }
+          );
+        } else {
+          schemaShape[field.name] = v;
         }
-        schemaShape[field.name] = v;
       }
 
       return;
@@ -86,7 +92,9 @@ function generateSchema(fields: FieldConfig[]) {
         try {
           const customPattern = new RegExp(v.customRegex);
           validator = validator.regex(customPattern, 'Formato inválido');
-        } catch {}
+        } catch (error) {
+          console.error(error);
+        }
       }
     }
     schemaShape[field.name] = validator;
@@ -98,7 +106,7 @@ function generateSchema(fields: FieldConfig[]) {
 type PreviewProps = {
   form: FormConfig;
   previewStep: number;
-  setPreviewStep: (n: number) => void;
+  setPreviewStep: (value: number | ((prev: number) => number)) => void;
   previewMode?: boolean;
   coverEnabled?: boolean;
 };
@@ -107,10 +115,10 @@ function FormPreview({
   form,
   previewStep,
   setPreviewStep,
-  previewMode = true,
   coverEnabled = true
 }: PreviewProps) {
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData] = useState<Record<string, undefined>>({});
+
   const allFields = useMemo(
     () => (form.steps ?? []).flatMap((s) => s.fields ?? []),
     [form.steps]
@@ -129,7 +137,7 @@ function FormPreview({
   }, [form.type, form.steps, previewStep]);
 
   const defaultValues = useMemo(() => {
-    const d: Record<string, any> = {};
+    const d: Record<string, string[] | string> = {};
     for (const f of allFields) {
       if (f.type === 'select' && (f as FieldSelectConfig).multiple)
         d[f.name] = [];
@@ -153,7 +161,6 @@ function FormPreview({
     reset,
     trigger,
     setFocus,
-    getValues,
     watch
   } = useForm({
     resolver: zodResolver(fullSchema),
@@ -163,13 +170,12 @@ function FormPreview({
 
   useEffect(() => {
     if (previewStep < 0) return;
-    const defaultValues: Record<string, any> = {};
+    const defaultValues: Record<string, string | string[]> = {};
     stepFields.forEach((field) => {
       defaultValues[field.name] =
         formData[field.name] ??
-        (field.type === 'select' && (field as any).multiple ? [] : '');
+        (field.type === 'select' && field?.multiple ? [] : '');
     });
-    // reset(defaultValues);
   }, [previewStep, stepFields, formData, reset]);
 
   const last =
@@ -210,21 +216,16 @@ function FormPreview({
     setPreviewStep(clampedValue);
   };
 
-  function focusFirstError() {
-    const firstKey = Object.keys(errors ?? {})[0];
-    if (firstKey) setFocus(firstKey as any, { shouldSelect: true });
-  }
-
   const onNext = async () => {
     if (previewStep === -1) return goto(0);
 
-    // Nombres de campos del paso actual
     const names = stepFields.map((f) => f.name);
-    const ok = await trigger(names); // 👈 valida SOLO el paso visible
+    const ok = await trigger(names);
     if (!ok) {
-      // Enfoca el primer error del paso
-      const firstErr = names.find((n) => !!(errors as any)[n]);
-      if (firstErr) setFocus(firstErr as any);
+      const firstErr = names.find(
+        (n) => !!(errors as Record<string, unknown>)[n]
+      );
+      if (firstErr) setFocus(firstErr as keyof typeof errors);
       return;
     }
     if (previewStep < last) return goto(previewStep + 1);
@@ -238,7 +239,7 @@ function FormPreview({
     } else {
       setPreviewStep((prev) => (prev < 0 ? 0 : prev));
     }
-  }, [form.cover?.enabled]);
+  }, [form.cover?.enabled, setPreviewStep]);
 
   useEffect(() => {
     const sub = watch((vals) => {
@@ -437,9 +438,7 @@ function FormPreview({
                             {/* errores/ayuda */}
                             {errors[field.name] && (
                               <p className="mt-1 text-sm text-red-200">
-                                {(errors as any)[
-                                  field.name
-                                ]?.message?.toString()}
+                                {errors[field.name]?.message?.toString()}
                               </p>
                             )}
                             {field.helpText && (

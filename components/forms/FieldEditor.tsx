@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 
-import type { FieldConfig, FieldType, FieldValidation } from '../types/form';
+import type {
+  FieldConfig,
+  FieldType,
+  FieldValidation,
+  SelectOption
+} from '@/types/form';
 
 interface FieldEditorProps {
   /** Datos iniciales para el campo cuando se edita. */
@@ -32,28 +37,28 @@ const FieldEditor: React.FC<FieldEditorProps> = ({
   const [type, setType] = useState<FieldType>(initial.type ?? 'text');
   const [label, setLabel] = useState(initial.label ?? '');
   const [placeholder, setPlaceholder] = useState(initial.placeholder ?? '');
-  const [helpText, setHelpText] = useState(initial.helpText ?? '');
+  // const [helpText, setHelpText] = useState(initial.helpText ?? '');
   const [required, setRequired] = useState(initial.required ?? false);
   const [options, setOptions] = useState<SelectOption[]>(
     initial?.type === 'select'
-      ? ((initial as any).options ?? [{ label: '', value: '' }])
+      ? (initial.options ?? [{ label: '', value: '' }])
       : [{ label: '', value: '' }]
   );
 
   const [multiple, setMultiple] = useState<boolean>(
-    initial?.type === 'select' ? Boolean((initial as any).multiple) : false
+    initial?.type === 'select' ? Boolean(initial.multiple) : false
   );
 
   const [minSelected, setMinSelected] = useState<number | undefined>(
-    initial?.type === 'select' ? (initial as any).minSelected : undefined
+    initial?.type === 'select' ? initial.minSelected : undefined
   );
 
   const [maxSelected, setMaxSelected] = useState<number | undefined>(
-    initial?.type === 'select' ? (initial as any).maxSelected : undefined
+    initial?.type === 'select' ? initial?.maxSelected : undefined
   );
 
   const [allowCustom, setAllowCustom] = useState<boolean>(
-    initial?.type === 'select' ? Boolean((initial as any).allowCustom) : false
+    initial?.type === 'select' ? Boolean(initial?.allowCustom) : false
   );
   const [validations, setValidations] = useState<FieldValidation>(
     initial.validations ?? {}
@@ -72,18 +77,18 @@ const FieldEditor: React.FC<FieldEditorProps> = ({
 
   const handleSave = () => {
     // Construir objeto con los valores actuales
-    const data: Partial<FieldConfig> & {
-      type: FieldType;
-      label: string;
-      required: boolean;
-    } = {
-      type,
-      label,
-      placeholder,
-      helpText,
-      required,
-      validations
-    };
+    // const data: Partial<FieldConfig> & {
+    //   type: FieldType;
+    //   label: string;
+    //   required: boolean;
+    // } = {
+    //   type,
+    //   label,
+    //   placeholder,
+    //   // helpText,
+    //   required,
+    //   validations
+    // };
     if (type === 'select') {
       // limpiar y validar opciones
       const clean = options
@@ -120,29 +125,30 @@ const FieldEditor: React.FC<FieldEditorProps> = ({
         type: 'select',
         label,
         placeholder,
-        helpText,
+        // helpText,
         required,
         options: clean,
         multiple: Boolean(multiple),
         minSelected: multiple ? minSelected : undefined,
         maxSelected: multiple ? maxSelected : undefined,
         allowCustom: Boolean(allowCustom)
-        // NO mandes id ni name aquí; tu capa de addField/updateField se encarga
       });
     } else {
-      // tu onSave original para text/date/textarea
       onSave({
         type,
         label,
         placeholder,
-        helpText,
+        // helpText,
         required,
-        validations // si usas
+        validations
       });
     }
   };
 
-  const onValidationChange = (field: keyof FieldValidation, value: any) => {
+  const onValidationChange = (
+    field: keyof FieldValidation,
+    value: string | number | undefined
+  ) => {
     setValidations((prev) => ({ ...prev, [field]: value || undefined }));
   };
 
