@@ -3,7 +3,14 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 import { SidebarRenderer } from '@/components/dashboard/sidebar-renderer';
+import {
+  Page,
+  PageHeader,
+  PagePrimaryBar,
+  PageTitle
+} from '@/components/ui/page';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Routes } from '@/constants/routes';
 import { getProfile } from '@/data/account/get-profile';
 import { dedupedAuth } from '@/lib/auth';
@@ -45,17 +52,24 @@ export default async function DashboardLayout({
   const profile = await getProfile();
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-auto">
       <SidebarProvider>
-        <SidebarRenderer
-          profile={profile}
-        />
-        {/* Set max-width so full-width tables can overflow horizontally correctly */}
+        <SidebarRenderer profile={profile} />
         <SidebarInset
           id="skip"
           className="size-full lg:[transition:max-width_0.2s_linear] lg:peer-data-[state=collapsed]:max-w-[calc(100vw-var(--sidebar-width-icon))] lg:peer-data-[state=expanded]:max-w-[calc(100vw-var(--sidebar-width))]"
         >
-          {children}
+          <Page>
+            <PageHeader>
+              <PagePrimaryBar>
+                <PageTitle>My workspace</PageTitle>
+                <ThemeToggle />
+              </PagePrimaryBar>
+            </PageHeader>
+            <div className="max-w-8xl mx-auto w-full px-4 py-6 sm:px-6 sm:py-8">
+              {children}
+            </div>
+          </Page>
         </SidebarInset>
       </SidebarProvider>
     </div>
